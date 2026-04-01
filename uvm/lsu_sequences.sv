@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // ═══════════════════════════════════════════════════════════════
 //  Base sequence — single transaction with auto-incrementing tags
 // ═══════════════════════════════════════════════════════════════

@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // A generic cache. It must consider:
 // - returning data on a hit (to higher-level cache)
 // - requesting data on a miss (to lower-level cache)
@@ -340,7 +341,7 @@ module cache #(
           end
         end
         for (int set = 0; set < NUM_SETS; set++) begin
-          plru_bits[set] <= '0;
+          plru_bits_next[set] = '0;
         end
 
         next_state = IDLE;
@@ -435,12 +436,14 @@ module cache #(
       evict_data_reg <= '0;
       cache_line_in_reg <= '0;
       cl_in_reg <= '0;
+      cur_state <= IDLE;
 
       for (int i = 0; i < NUM_SETS; i++) begin
         lru_state[i] <= '0;  // no more lru
       end
       for (int i = 0; i < NUM_SETS; i++) begin
         plru_state[i] <= '0;
+        plru_bits[i]  <= '0;
       end
 
       for (int i = 0; i < A; i++) begin

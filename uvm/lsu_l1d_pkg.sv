@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 package lsu_l1d_pkg;
 
   import uvm_pkg::*;

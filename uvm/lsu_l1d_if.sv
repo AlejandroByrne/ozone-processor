@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // Processor-facing interface (stimulus boundary)
 interface lsu_proc_if (input logic clk, input logic rst_n);
 

@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // Simple LLC memory model.
 //
 // Responds to L1D cache miss requests with cacheline data from a backing

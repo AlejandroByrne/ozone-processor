@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 /*
  The L1 Data cache is expected to be:
  - PIPT. However the addresses it accepts are virtual, so it must interface with
@@ -91,9 +92,45 @@ module l1_data_cache #(
   logic                 [MSHR_COUNT-1:0] mshr_empty;
   logic                 [MSHR_COUNT-1:0] mshr_full;
 
+  // Define registers for inputs
+  logic cache_flush_reg;
+  logic cache_hc_valid_reg;
+  logic cache_hc_ready_reg;
+  logic [PADDR_BITS-1:0] cache_hc_addr_reg;
+  logic [64-1:0] cache_hc_value_reg;
+  logic cache_hc_we_reg;
+  logic [B*8-1:0] cache_cache_line_reg;
+  logic cache_cl_reg;
+  logic cache_lc_valid_in_reg;
+  logic cache_lc_ready_in_reg;
+  logic [PADDR_BITS-1:0] cache_lc_addr_in_reg;
+  logic [B*8-1:0] cache_lc_value_in_reg;
 
+  // Define registers for outputs
+  logic cache_lc_valid_out_reg;
+  logic cache_lc_ready_out_reg;
+  logic [PADDR_BITS-1:0] cache_lc_addr_out_reg;
+  logic [B*8-1:0] cache_lc_value_out_reg;
+  logic cache_we_out_reg;
+  logic cache_hc_valid_out_reg;
+  logic cache_hc_ready_out_reg;
+  logic cache_hc_we_out_reg;
+  logic [PADDR_BITS-1:0] cache_hc_addr_out_reg;
+  logic [64-1:0] cache_hc_value_out_reg;
 
-
+  // Define combinational signals for inputs
+  logic cache_flush_next;
+  logic cache_hc_valid_next;
+  logic cache_hc_ready_next;
+  logic [PADDR_BITS-1:0] cache_hc_addr_next;
+  logic [64-1:0] cache_hc_value_next;
+  logic cache_hc_we_next;
+  logic [B*8-1:0] cache_cache_line_next;
+  logic cache_cl_next;
+  logic cache_lc_valid_in_next;
+  logic cache_lc_ready_in_next;
+  logic [PADDR_BITS-1:0] cache_lc_addr_in_next;
+  logic [B*8-1:0] cache_lc_value_in_next;
 
   typedef enum logic [3:0] {
     IDLE,
@@ -219,25 +256,17 @@ module l1_data_cache #(
 
     case (cur_state)
       IDLE: begin
+        // By default, we are ready if there is at least one free MSHR
+        for (int i = 0; i < MSHR_COUNT; i++) begin
+          if (!mshr_outputs[i].valid) begin
+            lsu_ready_out_comb = 1;
+            break;
+          end
+        end
 
         if (lc_valid_in_reg) begin
           lc_ready_out_comb = 1;
-        end else if (lsu_valid_in_reg) begin
-          // check if we can accept this request
-          for (int i = 0; i < MSHR_COUNT; i++) begin
-            if (!mshr_outputs[i].valid) begin
-              // there is a free mshr entry, we can take the request
-              lsu_ready_out_comb = 1;
-              break;
-            end else if (mshr_outputs[i].no_offset_addr == no_offset_addr) begin
-              // matches an existing MSHR, check if its queue has space
-              if (!mshr_full[i]) begin
-                lsu_ready_out_comb = 1;
-                break;
-              end
-            end
-          end
-        end
+        end 
 
         lsu_tag_out_comb = lsu_tag_in_reg;
 
@@ -548,7 +577,7 @@ module l1_data_cache #(
       end
     endcase
 
-    $monitor("[%0t][L1D] State was %d", $time, cur_state);
+    lsu_tag_out_comb = (cur_state == IDLE) ? lsu_tag_in_reg : lsu_tag_out_reg;
   end
 
   always_ff @(posedge clk_in) begin : l1_register_updates
@@ -575,6 +604,7 @@ module l1_data_cache #(
       lc_addr_out_reg <= '0;
       lc_value_out_reg <= '0;
       lc_we_out_reg <= 1'b0;
+      cur_state <= IDLE;
       // pos_reg <= 0;
     end else if (!cs_N_in) begin
       if (next_state == IDLE) begin
@@ -654,49 +684,6 @@ module l1_data_cache #(
 
 
   /* Generic Cache Storage  (This cache does NOT send an HC response upon LC response, L1D will need to handle that) */
-  // Define registers for inputs
-  logic cache_rst_N_reg;
-  logic cache_clk_reg;
-  logic cache_cs_reg;
-  logic cache_flush_reg;
-  logic cache_hc_valid_reg;
-  logic cache_hc_ready_reg;
-  logic [PADDR_BITS-1:0] cache_hc_addr_reg;
-  logic [64-1:0] cache_hc_value_reg;
-  logic cache_hc_we_reg;
-  logic [B*8-1:0] cache_cache_line_reg;
-  logic cache_cl_reg;
-  logic cache_lc_valid_in_reg;
-  logic cache_lc_ready_in_reg;
-  logic [PADDR_BITS-1:0] cache_lc_addr_in_reg;
-  logic [B*8-1:0] cache_lc_value_in_reg;
-
-  // Define registers for outputs
-  logic cache_lc_valid_out_reg;
-  logic cache_lc_ready_out_reg;
-  logic [PADDR_BITS-1:0] cache_lc_addr_out_reg;
-  logic [B*8-1:0] cache_lc_value_out_reg;
-  logic cache_we_out_reg;
-  logic cache_hc_valid_out_reg;
-  logic cache_hc_ready_out_reg;
-  logic cache_hc_we_out_reg;
-  logic [PADDR_BITS-1:0] cache_hc_addr_out_reg;
-  logic [64-1:0] cache_hc_value_out_reg;
-
-  // Define combinational signals for inputs
-  logic cache_flush_next;
-  logic cache_hc_valid_next;
-  logic cache_hc_ready_next;
-  logic [PADDR_BITS-1:0] cache_hc_addr_next;
-  logic [64-1:0] cache_hc_value_next;
-  logic cache_hc_we_next;
-  logic [B*8-1:0] cache_cache_line_next;
-  logic cache_cl_next;
-  logic cache_lc_valid_in_next;
-  logic cache_lc_ready_in_next;
-  logic [PADDR_BITS-1:0] cache_lc_addr_in_next;
-  logic [B*8-1:0] cache_lc_value_in_next;
-
   cache #(
       .A(A),
       .B(B),
@@ -706,7 +693,7 @@ module l1_data_cache #(
   ) cache_module (
       .rst_N_in(rst_N_in),
       .clk_in(clk_in),
-      .cs_in(1),
+      .cs_in(1'b1),
       .flush_in(flush_in_reg),
       .hc_valid_in(cache_hc_valid_reg),
       .hc_ready_in(cache_hc_ready_reg),
@@ -770,6 +757,9 @@ module mshr_queue #(
     if (rst_in) begin
       head <= 0;
       size <= 0;
+      for (int i = 0; i < QUEUE_SIZE; i++) begin
+        queue[i] <= '0;
+      end
     end else begin
       queue <= next_queue;
       size  <= next_size;

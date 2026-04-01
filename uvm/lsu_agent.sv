@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 class lsu_agent extends uvm_agent;
   `uvm_component_utils(lsu_agent)
 

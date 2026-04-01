@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 //=====================================================================
 // Top-Level Load-Store Unit
 //=====================================================================
@@ -167,6 +168,24 @@ module lsu_queue #(
   } mem_entry_t;
 
   mem_entry_t queue[QUEUE_DEPTH];
+
+  // Registered dispatch signals (with handshake)
+  logic reg_dispatch_valid;
+  logic reg_dispatch_is_store;
+  logic [63:0] reg_dispatch_addr, reg_dispatch_value;
+  logic [TAG_WIDTH-1:0] reg_dispatch_tag;
+
+  // Combinational search for a dispatch candidate
+  logic candidate_found;
+  int candidate_index;
+
+  typedef enum logic [1:0] {  // remnants of a long lost state machine
+    DISPATCH_NONE,
+    DISPATCH_FORWARD,
+    DISPATCH_MEMORY
+  } dispatch_kind_e;
+
+  dispatch_kind_e candidate_kind;
 
   // ring buffer pointers
   logic [$clog2(QUEUE_DEPTH)-1:0] head_ptr, tail_ptr;
@@ -409,6 +428,7 @@ module lsu_queue #(
       head_ptr <= '0;
       tail_ptr <= '0;
       count    <= '0;
+      waiting_for_data_count <= '0;
       for (int i = 0; i < QUEUE_DEPTH; i++) begin
         queue[i].valid       <= 1'b0;
         queue[i].ea_resolved <= 1'b0;
@@ -506,12 +526,6 @@ module lsu_queue #(
   // We'll look for one candidate (load or store) at a time to dispatch.
   // The memory interface can only handle one outstanding transaction.
 
-  typedef enum logic [1:0] {  // remnants of a long lost state machine
-    DISPATCH_NONE,
-    DISPATCH_FORWARD,
-    DISPATCH_MEMORY
-  } dispatch_kind_e;
-
   // Helper function: is entry i older than j in ring buffer
   function automatic logic is_older(input int i, input int j);
     int idx;
@@ -579,11 +593,6 @@ module lsu_queue #(
     end
   endfunction
 
-  // Combinational search for a dispatch candidate
-  logic candidate_found;
-  int candidate_index;
-  dispatch_kind_e candidate_kind;
-
   always_comb begin
     logic [$clog2(QUEUE_DEPTH)-1:0] idx;
     dispatch_kind_e dk;
@@ -599,54 +608,36 @@ module lsu_queue #(
 
     // First, search for a load
     for (int k = 0; k < count; k++) begin
-
       if (queue[idx].valid && queue[idx].ea_resolved && !queue[idx].dispatched &&
-                (queue[idx].op_type == OP_LOAD) && !queue[idx].complete) begin // needed to add complete field to ensure it hasnt been forwarded to
-        // $display("made it here");
-        dk = check_dispatchable(int'(idx));  // Cast idx to int for function call
+                (queue[idx].op_type == OP_LOAD) && !queue[idx].complete) begin 
+        dk = check_dispatchable(int'(idx));
         if (dk != DISPATCH_NONE) begin
           candidate_found = 1'b1;
-          candidate_index = int'(idx);  // Cast idx to int for assignment
+          candidate_index = int'(idx);
           candidate_kind  = dk;
-          // $display("Time %0t: LSU Queue: Found load for tag %h at index %0d", $time,
-          //          queue[idx].tag, idx);
           break;
         end
       end
       idx = idx + 1'b1;
     end
 
-    // If no load found, search for a store
     if (!candidate_found) begin
-
       idx = head_ptr;
       for (int k = 0; k < count; k++) begin
-
         if (queue[idx].valid && queue[idx].ea_resolved && !queue[idx].dispatched &&
-                    (queue[idx].op_type == OP_STORE) && !queue[idx].complete) begin // needed to add complete field to ensure it hasnt been forwarded to
-
-          dk = check_dispatchable(int'(idx));  // Cast idx to int for function call
+                    (queue[idx].op_type == OP_STORE) && !queue[idx].complete) begin 
+          dk = check_dispatchable(int'(idx));
           if (dk != DISPATCH_NONE) begin
             candidate_found = 1'b1;
-            candidate_index = int'(idx);  // Cast idx to int for assignment
+            candidate_index = int'(idx);
             candidate_kind  = dk;
             break;
           end
         end
         idx = idx + 1'b1;
-
       end
     end
-  end
-
-  // Registered dispatch signals (with handshake)
-  logic reg_dispatch_valid;
-  logic reg_dispatch_is_store;
-  logic [63:0] reg_dispatch_addr, reg_dispatch_value;
-  logic [TAG_WIDTH-1:0] reg_dispatch_tag;
-
-  always_ff @(posedge clk_in) begin
-
+    // if (count > 0 && !candidate_found) $display("[%0t][LSU_Q] No candidate found. Count=%0d, Head=%0d", $time, count, head_ptr);
   end
 
   // Drive the handshake outputs

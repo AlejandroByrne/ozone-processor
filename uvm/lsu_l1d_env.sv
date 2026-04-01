@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 class lsu_l1d_env extends uvm_env;
   `uvm_component_utils(lsu_l1d_env)
 

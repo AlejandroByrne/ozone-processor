@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 class lsu_coverage extends uvm_subscriber #(lsu_seq_item);
   `uvm_component_utils(lsu_coverage)
 

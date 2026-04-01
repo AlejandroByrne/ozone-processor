@@ -1,0 +1,22 @@
+0.7
+2020.2
+May 21 2025
+22:59:56
+/home/ale/Documents/ozone-processor/mem/src/cache.sv,1775067149,systemVerilog,,/home/ale/Documents/ozone-processor/mem/src/load_store_unit.sv,,cache,,uvm,,,,,,
+/home/ale/Documents/ozone-processor/mem/src/l1_data_cache.sv,1775079215,systemVerilog,,,,l1_data_cache;l1dpack;mshr_queue,,uvm,,,,,,
+/home/ale/Documents/ozone-processor/mem/src/load_store_unit.sv,1775079438,systemVerilog,,/home/ale/Documents/ozone-processor/mem/src/l1_data_cache.sv,,load_store_unit;lsu_control;lsu_queue;memory_interface,,uvm,,,,,,
+/home/ale/Documents/ozone-processor/uvm/llc_responder.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_agent.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_coverage.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_driver.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_l1d_env.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_l1d_if.sv,1775066843,verilog,,,,llc_if;lsu_proc_if,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_l1d_pkg.sv,1775066843,systemVerilog,/home/ale/Documents/ozone-processor/uvm/tb_top.sv,/home/ale/Documents/ozone-processor/uvm/tb_top.sv,/tools/Xilinx/2025.1/data/xsim/system_verilog/uvm_include/uvm_macros.svh;/home/ale/Documents/ozone-processor/uvm/lsu_seq_item.sv;/home/ale/Documents/ozone-processor/uvm/lsu_driver.sv;/home/ale/Documents/ozone-processor/uvm/lsu_monitor.sv;/home/ale/Documents/ozone-processor/uvm/lsu_agent.sv;/home/ale/Documents/ozone-processor/uvm/llc_responder.sv;/home/ale/Documents/ozone-processor/uvm/lsu_scoreboard.sv;/home/ale/Documents/ozone-processor/uvm/lsu_coverage.sv;/home/ale/Documents/ozone-processor/uvm/lsu_l1d_env.sv;/home/ale/Documents/ozone-processor/uvm/lsu_sequences.sv;/home/ale/Documents/ozone-processor/uvm/lsu_l1d_test.sv,lsu_l1d_pkg,,uvm,mem/src;uvm,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_l1d_test.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_monitor.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_scoreboard.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_seq_item.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/lsu_sequences.sv,1775066843,verilog,,,,,,,,,,,,
+/home/ale/Documents/ozone-processor/uvm/tb_top.sv,1775063996,systemVerilog,,,/home/ale/Documents/ozone-processor/uvm/lsu_l1d_if.sv;/tools/Xilinx/2025.1/data/xsim/system_verilog/uvm_include/uvm_macros.svh,tb_top,,uvm,mem/src;uvm,,,,,
+/home/ale/Documents/ozone-processor/uvm/test_dpi.sv,1775084724,systemVerilog,,,,test_dpi,,,,,,,,
+/tools/Xilinx/2025.1/data/xsim/system_verilog/uvm_include/uvm_macros.svh,1747891607,verilog,,,,,,,,,,,,

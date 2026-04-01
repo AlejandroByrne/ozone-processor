@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 class lsu_seq_item extends uvm_sequence_item;
 
   // Stimulus fields

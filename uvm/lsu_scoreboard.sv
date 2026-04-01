@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // Self-checking scoreboard with reference memory model.
 //
 // Maintains an associative array of expected memory contents. On stores,
@@ -76,7 +77,10 @@ class lsu_scoreboard extends uvm_scoreboard;
 
   // ── Called by monitor when a completion comes back from the LSU ──
   function void write_comp(lsu_seq_item item);
-    bit [9:0] t = item.tag;
+    bit [9:0] t;
+    pending_load_t pl;
+
+    t = item.tag;
 
     if (!pending_loads.exists(t)) begin
       // Could be a store completion — not an error
@@ -86,7 +90,7 @@ class lsu_scoreboard extends uvm_scoreboard;
     end
 
     // Compare returned value against reference model
-    pending_load_t pl = pending_loads[t];
+    pl = pending_loads[t];
     pending_loads.delete(t);
     num_loads_checked++;
 
