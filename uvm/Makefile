@@ -11,7 +11,6 @@ UVM_HOME ?= $(QUESTA_HOME)/verilog_src/uvm-1.2
 # ── Source files ──
 RTL_SRCS = \
 	../mem/src/cache.sv \
-	../mem/src/mem_control/comb_util.sv \
 	../mem/src/load_store_unit.sv \
 	../mem/src/l1_data_cache.sv
 
@@ -32,7 +31,7 @@ ifeq ($(SIM),questa)
 VLOG = vlog
 VSIM = vsim
 
-VLOG_FLAGS = -sv +incdir+. +incdir+../mem/src +incdir+../mem/src/mem_control \
+VLOG_FLAGS = -sv +incdir+. +incdir+../mem/src \
              -suppress 2583 -suppress 13314
 
 VSIM_FLAGS = -c -do "run -all; quit -f" \
@@ -68,7 +67,7 @@ ifeq ($(SIM),vcs)
 
 VCS = vcs
 VCS_FLAGS = -full64 -sverilog -ntb_opts uvm-1.2 -timescale=1ns/1ps \
-            +incdir+. +incdir+../mem/src +incdir+../mem/src/mem_control \
+            +incdir+. +incdir+../mem/src \
             -debug_access+all
 
 compile:
@@ -94,7 +93,7 @@ ifeq ($(SIM),xcelium)
 
 XRUN = xrun
 XRUN_FLAGS = -uvm -sv -64bit -timescale 1ns/1ps \
-             +incdir+. +incdir+../mem/src +incdir+../mem/src/mem_control \
+             +incdir+. +incdir+../mem/src \
              -access +rwc
 
 compile run:

@@ -4,13 +4,15 @@
 // updates the model. On load completions, compares the returned value
 // against the model. Tracks pending loads for timeout detection.
 
+// These macros define uvm_analysis_imp_req and uvm_analysis_imp_comp classes.
+// They MUST be at package/compilation-unit scope, NOT inside a class.
+`uvm_analysis_imp_decl(_req)
+`uvm_analysis_imp_decl(_comp)
+
 class lsu_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(lsu_scoreboard)
 
   // TLM analysis exports — connected to the monitor's analysis ports
-  uvm_analysis_imp_decl(_req)
-  uvm_analysis_imp_decl(_comp)
-
   uvm_analysis_imp_req  #(lsu_seq_item, lsu_scoreboard)  req_export;
   uvm_analysis_imp_comp #(lsu_seq_item, lsu_scoreboard)  comp_export;
 
@@ -69,7 +71,7 @@ class lsu_scoreboard extends uvm_scoreboard;
       pending_load_t pl;
       pl.addr           = item.addr;
       pl.expected_value  = get_expected(item.addr);
-      pl.issue_time      = $time;
+      pl.issue_time      = $stime;
       pending_loads[item.tag] = pl;
       `uvm_info("SCB", $sformatf("LOAD: expecting ref_mem[0x%0h] = 0x%0h (tag=%0d)",
                 item.addr, pl.expected_value, item.tag), UVM_HIGH)

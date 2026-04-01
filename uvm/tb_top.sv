@@ -14,18 +14,13 @@
 
 `timescale 1ns/1ps
 
-// RTL includes — adjust paths as needed for your simulator
-`include "../mem/src/cache.sv"
-`include "../mem/src/load_store_unit.sv"
-`include "../mem/src/l1_data_cache.sv"
-`include "../mem/src/mem_control/comb_util.sv"
-
-// UVM interface definitions
+// UVM interface definitions (RTL files are compiled separately via Makefile)
 `include "lsu_l1d_if.sv"
 
 module tb_top;
 
   import uvm_pkg::*;
+  `include "uvm_macros.svh"
   import lsu_l1d_pkg::*;
 
   // ── Clock and reset ──
