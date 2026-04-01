@@ -9,6 +9,11 @@
 `uvm_analysis_imp_decl(_req)
 `uvm_analysis_imp_decl(_comp)
 
+// DPI-C Golden Model Imports
+import "DPI-C" function void mem_write(longint unsigned addr, longint unsigned data);
+import "DPI-C" function longint unsigned mem_read(longint unsigned addr);
+import "DPI-C" function void mem_reset();
+
 class lsu_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(lsu_scoreboard)
 
@@ -17,8 +22,8 @@ class lsu_scoreboard extends uvm_scoreboard;
   uvm_analysis_imp_comp #(lsu_seq_item, lsu_scoreboard)  comp_export;
 
   // Reference memory model: addr → value
-  // Default value for any address = the address itself (matches LLC responder)
-  logic [63:0] ref_mem [logic [63:0]];
+  // Now managed in C++ via DPI
+  // logic [63:0] ref_mem [logic [63:0]];
 
   // Pending loads: tag → expected value
   typedef struct {
@@ -40,6 +45,7 @@ class lsu_scoreboard extends uvm_scoreboard;
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
+    mem_reset(); // Initialize C++ model
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -48,29 +54,19 @@ class lsu_scoreboard extends uvm_scoreboard;
     comp_export = new("comp_export", this);
   endfunction
 
-  // ── Default memory value: each 8-byte-aligned address contains itself ──
-  function logic [63:0] get_expected(logic [63:0] addr);
-    logic [63:0] aligned = {addr[63:3], 3'b0};
-    if (ref_mem.exists(aligned))
-      return ref_mem[aligned];
-    else
-      return aligned;  // matches LLC responder's generate_cacheline()
-  endfunction
-
   // ── Called by monitor when a request (load or store) enters the LSU ──
   function void write_req(lsu_seq_item item);
     if (item.is_write) begin
-      // Store: update reference model
-      logic [63:0] aligned = {item.addr[63:3], 3'b0};
-      ref_mem[aligned] = item.value;
+      // Store: update reference model in C++
+      mem_write(item.addr, item.value);
       num_stores_seen++;
       `uvm_info("SCB", $sformatf("STORE: ref_mem[0x%0h] = 0x%0h (tag=%0d)",
-                aligned, item.value, item.tag), UVM_HIGH)
+                item.addr, item.value, item.tag), UVM_HIGH)
     end else begin
-      // Load: record expected value for later comparison
+      // Load: record expected value from C++ reference model
       pending_load_t pl;
       pl.addr           = item.addr;
-      pl.expected_value  = get_expected(item.addr);
+      pl.expected_value  = mem_read(item.addr);
       pl.issue_time      = $stime;
       pending_loads[item.tag] = pl;
       `uvm_info("SCB", $sformatf("LOAD: expecting ref_mem[0x%0h] = 0x%0h (tag=%0d)",

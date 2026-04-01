@@ -39,9 +39,12 @@ class lsu_coverage extends uvm_subscriber #(lsu_seq_item);
 
     // Operation x cache set — exercises all op types across all sets
     cx_op_set: cross cp_op_type, cp_cache_set;
+
+    // Phase delay x op type
+    cx_delay_op: cross cp_phase_delay, cp_op_type;
   endgroup
 
-  covergroup hazard_cg with function sample(hazard_e haz);
+  covergroup hazard_cg with function sample(hazard_e haz, bit [2:0] cache_set);
     cp_hazard: coverpoint haz {
       bins raw = {HAZ_RAW};
       bins war = {HAZ_WAR};
@@ -49,6 +52,11 @@ class lsu_coverage extends uvm_subscriber #(lsu_seq_item);
       bins rar = {HAZ_RAR};
       bins none = {HAZ_NONE};
     }
+    cp_cache_set: coverpoint cache_set {
+      bins sets[] = {[0:7]};
+    }
+    // Hazard type x cache set — ensures hazards are hit across all cache sets
+    cx_haz_set: cross cp_hazard, cp_cache_set;
   endgroup
 
   covergroup addr_pattern_cg with function sample(lsu_seq_item item);
@@ -72,6 +80,16 @@ class lsu_coverage extends uvm_subscriber #(lsu_seq_item);
       bins yes = {1};
       bins no  = {0};
     }
+
+    cp_op_type: coverpoint item.is_write {
+      bins load  = {0};
+      bins store = {1};
+    }
+
+    // Address patterns x operation type
+    cx_same_addr_op: cross cp_same_addr, cp_op_type;
+    cx_adjacent_op:  cross cp_adjacent,  cp_op_type;
+    cx_set_conflict_op: cross cp_set_conflict, cp_op_type;
   endgroup
 
 
@@ -97,7 +115,7 @@ class lsu_coverage extends uvm_subscriber #(lsu_seq_item);
     addr_pattern_cg.sample(t);
 
     cur_hazard = classify_hazard(t);
-    hazard_cg.sample(cur_hazard);
+    hazard_cg.sample(cur_hazard, t.addr[8:6]);
 
     // Update state for next comparison
     prev_addr     = t.addr;

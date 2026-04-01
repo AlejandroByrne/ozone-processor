@@ -18,6 +18,9 @@ UVM_SRCS = \
 	lsu_l1d_pkg.sv \
 	tb_top.sv
 
+DPI_SRCS = \
+	ref_model.cpp
+
 # ── Test selection (override with: make TEST=lsu_raw_test) ──
 TEST ?= lsu_base_test
 SEED ?= random
@@ -37,13 +40,44 @@ VLOG_FLAGS = -sv +incdir+. +incdir+../mem/src \
 VSIM_FLAGS = -c -do "run -all; quit -f" \
              +UVM_TESTNAME=$(TEST) \
              +UVM_VERBOSITY=$(VERBOSITY) \
-             -sv_seed $(SEED)
+             -sv_seed $(SEED) \
+             -sv_lib dpi_lib
 
 compile:
+	$(VLOG) $(VLOG_FLAGS) $(DPI_SRCS) -dpiheader dpi_header.h
 	$(VLOG) $(VLOG_FLAGS) $(RTL_SRCS) $(UVM_SRCS)
+	# Compile DPI C++ into a shared library
+	g++ -shared -fPIC -o dpi_lib.so $(DPI_SRCS) -I$(QUESTA_HOME)/include
 
 run: compile
 	$(VSIM) $(VSIM_FLAGS) tb_top
+...
+# ═══════════════════════════════════════════════════════════════
+#  Riviera-Pro
+# ═══════════════════════════════════════════════════════════════
+ifeq ($(SIM),riviera)
+
+VLOG = alog
+VSIM = asim
+
+VLOG_FLAGS = -sv2k12 +incdir+. +incdir+../mem/src \
+             -dbg -msg 5
+
+VSIM_FLAGS = -c -do "run -all; quit" \
+             +UVM_TESTNAME=$(TEST) \
+             +UVM_VERBOSITY=$(VERBOSITY) \
+             -sv_seed $(SEED) \
+             -sv_lib dpi_lib
+
+compile:
+	$(VLOG) $(VLOG_FLAGS) $(RTL_SRCS) $(UVM_SRCS)
+	# Compile DPI C++ into a shared library
+	g++ -shared -fPIC -o dpi_lib.so $(DPI_SRCS)
+
+run: compile
+	$(VSIM) $(VSIM_FLAGS) tb_top
+
+endif
 
 # Run with waveform dump
 run_waves: compile
