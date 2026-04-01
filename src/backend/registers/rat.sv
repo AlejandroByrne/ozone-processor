@@ -85,7 +85,7 @@ module rat #(
             // TODO
           end
           if (is_xzr(regs_rr_in[i].src2)) begin
-            // TODO 
+            // TODO
           end
         end else if (instr[i].uopcode != UOP_HLT) begin  // we have an intermediate
           get_data_ri(instr[i].data, regs_ri_in[i]);
@@ -113,8 +113,8 @@ module rat #(
 
         // Write ROB entry
         outputs[i].pc <= instr[i].pc;
-        outputs[i].next_pc       <= (instr[i].uopcode == UOP_BL || instr[i].uopcode == UOP_BCOND) && 
-                                    instr[i].data.predict_taken ? instr[i].data.branch_target : 
+        outputs[i].next_pc       <= (instr[i].uopcode == UOP_BL || instr[i].uopcode == UOP_BCOND) &&
+                                    instr[i].data.predict_taken ? instr[i].data.branch_target :
                                     instr[i].pc + 4;
         outputs[i].uop <= instr[i];
         outputs[i].r1_reg_phys <= store[src1];

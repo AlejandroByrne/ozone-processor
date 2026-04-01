@@ -126,7 +126,7 @@ module reorder_buffer #(
     input logic [$clog2(Q_DEPTH)-1:0] bru_wb_ptr_in,
 
     // ** INPUTS FROM REG_FILE **
-    input logic [reg_pkg::NUM_PHYS_REGS-1:0] scoreboard_in, // scoreboard from reg file to check if the register is valid or not    
+    input logic [reg_pkg::NUM_PHYS_REGS-1:0] scoreboard_in, // scoreboard from reg file to check if the register is valid or not
 
     // ** EXEC OUTPUT LOGIC **
     // these outputs will be sent to the execute phase where insn scheduler will decide which ones we can execute
@@ -177,7 +177,7 @@ module reorder_buffer #(
       .Q_DEPTH(Q_DEPTH),
       .Q_WIDTH(Q_WIDTH)
   ) reorder_buffer_queue_internal (
-      // ** INPUTS ** 
+      // ** INPUTS **
       clk_in,
       rst_N_in,
       flush_in,
@@ -279,8 +279,8 @@ module reorder_buffer #(
             rrat_update_out[next_rrat_ptr] = queue_out[i];
             rrat_update_valid_out[next_rrat_ptr] = 1'b1;
           end else if (
-                        queue_out[i].status == EXCEPTION || 
-                        queue_out[i].status == INTERRUPT || 
+                        queue_out[i].status == EXCEPTION ||
+                        queue_out[i].status == INTERRUPT ||
                         queue_out[i].status == TRAP) begin
             // normally would be separated but for the sake of demonstration just turn on a LED or smth
           end
@@ -305,7 +305,7 @@ module reorder_buffer #(
           end
           UOP_LOAD: begin
             if (lsu_ready_in) begin
-              // LDUR is M format which specifies 1 register and 1 imm, but all imms will be written to regs. 
+              // LDUR is M format which specifies 1 register and 1 imm, but all imms will be written to regs.
               insn_check(
                   cur_lsu_check, cur_entry,
                   scoreboard_in[cur_entry.r1_reg_phys] && scoreboard_in[cur_entry.r2_reg_phys],
