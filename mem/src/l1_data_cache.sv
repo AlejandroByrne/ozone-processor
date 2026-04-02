@@ -211,6 +211,7 @@ module l1_data_cache #(
   logic needToAdd;
   int   wait_comb;
   int   wait_reg;
+  logic mshr_active_reg;
 
   always_comb begin : l1d_combinational_logic
     lsu_valid_out_comb = '0;
@@ -274,8 +275,8 @@ module l1_data_cache #(
 
         if (flush_in) begin
           next_state = FLUSH;
-        end else if (lc_valid_in_reg || (lsu_ready_out_comb && lsu_valid_in_reg)) begin
-          next_state = (lc_valid_in_reg || lsu_we_in_reg) ? WRITE_CACHE : READ_CACHE;
+        end else if (lc_valid_in_reg || (lsu_ready_out_comb && lsu_valid_in)) begin
+          next_state = (lc_valid_in_reg || lsu_we_in) ? WRITE_CACHE : READ_CACHE;
         end
       end
 
@@ -338,17 +339,16 @@ module l1_data_cache #(
           cache_hc_ready_next = 1;  // complete transcation
           lsu_value_out_comb = cache_hc_value_out_reg;
           next_state = SEND_RESP_HC;
-        } else begin
+        end else begin
           // was a write from HC but was completed without problem
           wait_comb -= 1;
           if (wait_comb == 0) begin
             next_state = COMPLETE_WRITE;
           end
         end
-        end
+      end
 
-
-        CHECK_MSHR: begin
+      CHECK_MSHR: begin
         // go through every MSHR and check if we already have one
         for (int i = 0; i < MSHR_COUNT; i++) begin
           if (mshr_outputs[i].no_offset_addr == no_offset_addr) begin
@@ -504,15 +504,13 @@ module l1_data_cache #(
       COMPLETE_WRITE: begin
         lsu_valid_out_comb = 1;
         lsu_write_complete_out_comb = 1;
-        // basically, wait until the LSU accepts that our write was done
-        if (lsu_ready_in_reg) begin
-          // LSU was ready, we can just submit the data and exit
-          // If we are here because of a normal hit (found=0), go to IDLE.
-          // If we are here from MSHR clearing (found=1), go to CLEAR_MSHR.
-          next_state = (found) ? CLEAR_MSHR : IDLE;
-          cache_hc_valid_next = 0;
-          lsu_value_out_comb = 0;
-        end
+        // --- HANDSHAKE RULE ---
+        // Since the processor interface lacks a 'ready' signal for completions,
+        // we pulse valid for exactly one cycle and unconditionally return to IDLE
+        // (or CLEAR_MSHR if we were handling a miss).
+        next_state = (mshr_active_reg) ? CLEAR_MSHR : IDLE;
+        cache_hc_valid_next = 0;
+        lsu_value_out_comb = 0;
       end
 
       READ_FROM_MSHR: begin
@@ -532,12 +530,8 @@ module l1_data_cache #(
         lsu_value_out_comb  = cache_hc_value_out_reg;
         cache_hc_ready_next = 1;
 
-        // basically, wait until the LSU accepts that our write was done
-        if (lsu_ready_in_reg && cache_hc_valid_out_reg) begin
-          // LSU was ready, we can just submit the data and exit
-          next_state = CLEAR_MSHR;
-          cache_hc_valid_next = 0;
-        end
+        next_state = (mshr_active_reg) ? CLEAR_MSHR : IDLE;
+        cache_hc_valid_next = 0;
       end
 
       EVICT: begin
@@ -563,14 +557,10 @@ module l1_data_cache #(
       SEND_RESP_HC: begin
         lsu_valid_out_comb = 1;
         // Zero-pad the physical address to 64 bits
-        // The original code {{{64 - PADDR_BITS} {'b0}}, cache_hc_addr_out_reg} caused an error
-        // because the replication count was potentially unsized.
-        // Casting to 64' achieves the same zero-padding result more robustly.
         lsu_addr_out_comb  = 64'(cache_hc_addr_out_reg);
         lsu_value_out_comb = cache_hc_value_out_reg;
-        if (lsu_ready_in_reg) begin
-          next_state = IDLE;
-        end
+        next_state = IDLE;
+        cache_hc_ready_next = 1;
       end
 
       default: begin
@@ -578,7 +568,7 @@ module l1_data_cache #(
       end
     endcase
 
-    lsu_tag_out_comb = (cur_state == IDLE) ? lsu_tag_in_reg : lsu_tag_out_reg;
+    lsu_tag_out_comb = (cur_state == IDLE) ? lsu_tag_in : lsu_tag_out_reg;
   end
 
   always_ff @(posedge clk_in) begin : l1_register_updates
@@ -608,7 +598,7 @@ module l1_data_cache #(
       cur_state <= IDLE;
       // pos_reg <= 0;
     end else if (!cs_N_in) begin
-      if (next_state == IDLE) begin
+      if (cur_state == IDLE && (lsu_valid_in || lc_valid_in)) begin
         flush_in_reg <= flush_in;
         lsu_valid_in_reg <= lsu_valid_in;
         lsu_addr_in_reg <= lsu_addr_in;
@@ -618,10 +608,6 @@ module l1_data_cache #(
         lc_valid_in_reg <= lc_valid_in;
         lc_addr_in_reg <= lc_addr_in;
         lc_value_in_reg <= lc_value_in;
-
-        lsu_write_complete_out_reg <= lsu_write_complete_out;
-        lc_ready_out_reg <= lc_ready_out;
-        lsu_ready_out_reg <= lc_ready_out_comb;
       end
 
       lc_ready_in_reg <= lc_ready_in;
@@ -633,10 +619,14 @@ module l1_data_cache #(
       lsu_ready_out_reg <= lsu_ready_out_comb;
       lsu_addr_out_reg <= lsu_addr_out_comb;
       lsu_value_out_reg <= lsu_value_out_comb;
+      lsu_write_complete_out_reg <= lsu_write_complete_out_comb;
       lc_value_out_reg <= lc_value_out_comb;
       wait_reg <= wait_comb;
 
       cur_state <= next_state;
+
+      if (next_state == IDLE) mshr_active_reg <= 1'b0;
+      else if (next_state == CLEAR_MSHR) mshr_active_reg <= 1'b1;
 
       lsu_ready_in_reg <= lsu_ready_in;
       is_blocked_reg <= is_blocked_comb;

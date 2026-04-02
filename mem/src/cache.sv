@@ -239,15 +239,17 @@ module cache #(
           next_state = LOOKUP;
         end
       end
-
       LOOKUP: begin
-
-        for (int w = 0; w < A; w++) begin
-          if (tag_array[w][cur_set].valid && tag_array[w][cur_set].tag == cur_tag) begin
-            // we found this in here, we can mark it as a HIT
-            cur_hit = 1;
-            changed_way = w;  // the way we found this in. 
-
+        // Only perform tag comparison if the sampled request is valid.
+        if (hc_valid_reg || lc_valid_reg) begin
+          for (int w = 0; w < A; w++) begin
+            if (tag_array[w][cur_set].valid && tag_array[w][cur_set].tag == cur_tag) begin
+              // we found this in here, we can mark it as a HIT
+              cur_hit = 1;
+              changed_way = w;  // the way we found this in. 
+            end
+          end
+        end
             // Update bit-PLRU: Set bit for the accessed way
             // If all bits would be set, clear others
             case (changed_way)
@@ -274,9 +276,6 @@ module cache #(
               end
               default: ;
             endcase
-            break;
-          end
-        end
 
         if (!cur_hit) begin
           // Pick victim using bit-PLRU: first way with bit == 0
@@ -448,10 +447,12 @@ module cache #(
         end
       end
     end else begin
-      lc_ready_reg <= lc_ready_in;
-      hc_ready_reg <= hc_ready_in;
-
-      if (next_state == IDLE) begin
+      // --- INPUT SAMPLING LOGIC ---
+      // We only sample external inputs when we are in the IDLE state AND
+      // a valid request is actually present. This prevents "X-Pollution" 
+      // where the cache hallucinations a hit on uninitialized address pins
+      // during idle cycles between transactions.
+      if (cur_state == IDLE && (hc_valid_in || lc_valid_in)) begin
         flush_reg    <= flush_in;
         hc_valid_reg <= hc_valid_in;
         hc_addr_reg  <= hc_addr_in;
@@ -460,7 +461,6 @@ module cache #(
         lc_valid_reg <= lc_valid_in;
         lc_addr_reg  <= lc_addr_in;
         lc_value_reg <= lc_value_in;
-        // {cur_tag, cur_set, cur_offset} <= (lc_valid_reg) ? lc_addr_in : hc_addr_in;
         cache_line_in_reg <= cache_line_in;
         cl_in_reg <= cl_in;
       end
@@ -485,21 +485,21 @@ module cache #(
       hit_way_reg <= changed_way;
 
       // DEBUG STATEMENTS
-      if (cur_state == LOOKUP) begin
-        if (lc_valid_reg || cl_in_reg) begin
-          $display("[CACHE] considering dirty %b for set 0x%x",
-                   tag_array[LRU_BITS'(changed_way)][cur_set].dirty, cur_set);
-          if (tag_array[LRU_BITS'(changed_way)][cur_set].dirty) begin
-            $display("[CACHE] we evicted 🌾 at %x", hc_addr_in);
-          end
-        end else if (!cur_hit) begin
-          $display("[CACHE] we missed 🥀 at %x, set 0x%x", hc_addr_in, cur_set);
-        end
-      end else if (cur_state == RESPOND_HC) begin
-        $display("[CACHE] Read value %x for addr %x, returning to higher cache",
-                 cache_data[LRU_BITS'(changed_way)][cur_set][cur_offset*8+:64], {cur_tag, cur_set,
-                                                                                 cur_offset});
-      end
+      // if (cur_state == LOOKUP) begin
+      //   if (lc_valid_reg || cl_in_reg) begin
+      //     $display("[CACHE] considering dirty %b for set 0x%x",
+      //              tag_array[LRU_BITS'(changed_way)][cur_set].dirty, cur_set);
+      //     if (tag_array[LRU_BITS'(changed_way)][cur_set].dirty) begin
+      //       $display("[CACHE] we evicted 🌾 at %x", hc_addr_in);
+      //     end
+      //   end else if (!cur_hit) begin
+      //     $display("[CACHE] we missed 🥀 at %x, set 0x%x", hc_addr_in, cur_set);
+      //   end
+      // end else if (cur_state == RESPOND_HC) begin
+      //   $display("[CACHE] Read value %x for addr %x, returning to higher cache",
+      //            cache_data[LRU_BITS'(changed_way)][cur_set][cur_offset*8+:64], {cur_tag, cur_set,
+      //                                                                            cur_offset});
+      // end
     end
   end
 
