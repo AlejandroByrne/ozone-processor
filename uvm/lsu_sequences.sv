@@ -246,6 +246,38 @@ endclass
 
 
 // ═══════════════════════════════════════════════════════════════
+//  Smoke sequence: Direct DEADBEEF write and read
+// ═══════════════════════════════════════════════════════════════
+class lsu_smoke_seq extends lsu_base_seq;
+  `uvm_object_utils(lsu_smoke_seq)
+
+  function new(string name = "lsu_smoke_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+    lsu_seq_item item;
+
+    // 1. Send the STORE
+    item = lsu_seq_item::type_id::create("smoke_store");
+    start_item(item);
+    item.is_write = 1;
+    item.addr     = 64'h1234;
+    item.value    = 64'hDEADBEEF;
+    item.tag      = alloc_tag();
+    finish_item(item);
+
+    // 2. Send the LOAD to the same address
+    item = lsu_seq_item::type_id::create("smoke_load");
+    start_item(item);
+    item.is_write = 0;
+    item.addr     = 64'h1234;
+    item.tag      = alloc_tag();
+    finish_item(item);
+  endtask
+endclass
+
+// ═══════════════════════════════════════════════════════════════
 //  Mixed random: unconstrained, maximum state space exploration
 // ═══════════════════════════════════════════════════════════════
 class lsu_mixed_random_seq extends lsu_base_seq;

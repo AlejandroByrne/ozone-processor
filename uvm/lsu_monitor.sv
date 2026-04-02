@@ -4,6 +4,7 @@ class lsu_monitor extends uvm_monitor;
 
   virtual lsu_proc_if vif;
 
+  // To send to the soreboard:
   // Analysis ports: one for requests entering the LSU, one for completions leaving
   uvm_analysis_port #(lsu_seq_item) req_ap;
   uvm_analysis_port #(lsu_seq_item) comp_ap;

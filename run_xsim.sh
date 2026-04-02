@@ -1,31 +1,32 @@
 #!/bin/bash
 set -e
 
-# Directories
+# 1. Configuration (Set a default test if none is provided)
+TEST_NAME=${1:-lsu_base_test}
 UVM_DIR="uvm"
 MEM_SRC_DIR="mem/src"
 
-# Clean up
-rm -rf xsim.dir *.log *.jou *.pb
+echo "--- Building Simulation for Test: $TEST_NAME ---"
 
-# Compile C++ DPI code
+# 2. Compile C++ DPI code
 xsc ${UVM_DIR}/ref_model.cpp
 
-# Compile RTL
+# 3. Compile RTL (The Cache and LSU)
 xvlog -sv -L uvm \
     ${MEM_SRC_DIR}/cache.sv \
     ${MEM_SRC_DIR}/load_store_unit.sv \
     ${MEM_SRC_DIR}/l1_data_cache.sv
 
-# Compile UVM package and top
+# 4. Compile UVM package and top-level testbench
 xvlog -sv -L uvm \
     -i ${UVM_DIR} \
     -i ${MEM_SRC_DIR} \
     ${UVM_DIR}/lsu_l1d_pkg.sv \
     ${UVM_DIR}/tb_top.sv
 
-# Elaborate
+# 5. Elaborate (Link everything together)
 xelab -L uvm -sv_lib xsim.dir/work/xsc/dpi tb_top -s top_sim -timescale 1ns/1ps
 
-# Run
-xsim top_sim -R "$@"
+# 6. Run the simulation
+# We use -testplusarg to tell UVM which test class to instantiate
+xsim top_sim -R -testplusarg UVM_TESTNAME=$TEST_NAME

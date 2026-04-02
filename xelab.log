@@ -1,14 +1,28 @@
 Vivado Simulator v2025.1.0
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
-Running: /tools/Xilinx/2025.1/Vivado/bin/unwrapped/lnx64.o/xelab test_dpi -s dpi_sim -sv_lib xsim.dir/work/xsc/dpi -timescale 1ns/1ps 
+Running: /tools/Xilinx/2025.1/Vivado/bin/unwrapped/lnx64.o/xelab -L uvm -sv_lib xsim.dir/work/xsc/dpi tb_top -s top_sim -timescale 1ns/1ps 
 Multi-threading is on. Using 6 slave threads.
 WARNING: [XSIM 43-3431] One or more environment variables have been detected which affect the operation of the C compiler. These are typically not set in standard installations and are not tested by AMD, however they may be appropriate for your system, so the flow will attempt to continue.  If errors occur, try running xelab with the "-mt off -v 1" switches to see more information from the C compiler. The following environment variables have been detected:
 Starting static elaboration
 Pass Through NonSizing Optimizer
 Completed static elaboration
 Starting simulation data flow analysis
+WARNING: [XSIM 43-4468] File : /proj/primebuilds/9999.0_PRIME_0428_0031/installs/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv, Line : 25994, RANDC variable size more than 8 bits. This will be treated as a RAND variable instead.
 Completed simulation data flow analysis
 Time Resolution for simulation is 1ps
-Compiling module work.test_dpi
-Built simulation snapshot dpi_sim
+Compiling package uvm.uvm_pkg
+Compiling package std.std
+Compiling package work.lsu_l1d_pkg
+Compiling package work.l1dpack
+Compiling module work.lsu_proc_if_default
+Compiling module work.llc_if_default
+Compiling module work.lsu_queue(QUEUE_DEPTH=8,TAG_WIDT...
+Compiling module work.memory_interface(QUEUE_DEPTH=8)
+Compiling module work.lsu_control(QUEUE_DEPTH=8)
+Compiling module work.load_store_unit(QUEUE_DEPTH=8)
+Compiling module work.mshr_queue
+Compiling module work.cache(ADDR_BITS=22)
+Compiling module work.l1_data_cache_default
+Compiling module work.tb_top
+Built simulation snapshot top_sim

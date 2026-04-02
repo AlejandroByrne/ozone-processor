@@ -338,18 +338,17 @@ module l1_data_cache #(
           cache_hc_ready_next = 1;  // complete transcation
           lsu_value_out_comb = cache_hc_value_out_reg;
           next_state = SEND_RESP_HC;
-        end else begin
+        } else begin
           // was a write from HC but was completed without problem
           wait_comb -= 1;
           if (wait_comb == 0) begin
-            lsu_write_complete_out_comb = 1;
-            next_state = IDLE;
+            next_state = COMPLETE_WRITE;
           end
         end
-      end
+        end
 
 
-      CHECK_MSHR: begin
+        CHECK_MSHR: begin
         // go through every MSHR and check if we already have one
         for (int i = 0; i < MSHR_COUNT; i++) begin
           if (mshr_outputs[i].no_offset_addr == no_offset_addr) begin
@@ -508,7 +507,9 @@ module l1_data_cache #(
         // basically, wait until the LSU accepts that our write was done
         if (lsu_ready_in_reg) begin
           // LSU was ready, we can just submit the data and exit
-          next_state = CLEAR_MSHR;
+          // If we are here because of a normal hit (found=0), go to IDLE.
+          // If we are here from MSHR clearing (found=1), go to CLEAR_MSHR.
+          next_state = (found) ? CLEAR_MSHR : IDLE;
           cache_hc_valid_next = 0;
           lsu_value_out_comb = 0;
         end

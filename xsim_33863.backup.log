@@ -3,8 +3,8 @@
 # SW Build 6140274 on Wed May 21 22:58:25 MDT 2025
 # IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
 # SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
-# Start of session at: Wed Apr  1 16:39:15 2026
-# Process ID         : 28184
+# Start of session at: Wed Apr  1 19:45:01 2026
+# Process ID         : 33863
 # Current directory  : /home/ale/Documents/ozone-processor
 # Command line       : xsim -mode tcl -source {xsim.dir/top_sim/xsim_script.tcl}
 # Log file           : /home/ale/Documents/ozone-processor/xsim.log
@@ -13,16 +13,16 @@
 # Platform           : Ubuntu
 # Operating System   : Ubuntu 24.04.2 LTS
 # Processor Detail   : Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz
-# CPU Frequency      : 4000.003 MHz
+# CPU Frequency      : 4078.369 MHz
 # CPU Physical cores : 4
 # CPU Logical cores  : 8
 # Host memory        : 16646 MB
 # Swap memory        : 4294 MB
 # Total Virtual      : 20941 MB
-# Available Virtual  : 17081 MB
+# Available Virtual  : 16984 MB
 #-----------------------------------------------------------
 source xsim.dir/top_sim/xsim_script.tcl
-# xsim {top_sim} -testplusarg UVM_TESTNAME=lsu_load_test -autoloadwcfg -runall
+# xsim {top_sim} -testplusarg UVM_TESTNAME=lsu_base_test -autoloadwcfg -runall
 Time resolution is 1 ps
 run -all
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(18601) @ 0: reporter [UVM/RELNOTES] 
@@ -46,12 +46,12 @@ UVM-1.2
       (Specify +UVM_NO_RELNOTES to turn off this notice)
 
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(18648) @ 0: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
-UVM_INFO @ 0: reporter [RNTST] Running test lsu_load_test...
+UVM_INFO @ 0: reporter [RNTST] Running test lsu_base_test...
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(18752) @ 0: reporter [UVMTOP] UVM testbench topology:
 --------------------------------------------------------------
 Name                       Type                    Size  Value
 --------------------------------------------------------------
-uvm_test_top               lsu_load_test           -     @346 
+uvm_test_top               lsu_base_test           -     @346 
   env                      lsu_l1d_env             -     @359 
     agent                  lsu_agent               -     @368 
       drv                  lsu_driver              -     @424 
@@ -77,20 +77,18 @@ uvm_test_top               lsu_load_test           -     @346
 
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(20867) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
 [0][CACHE] State is  x, Offset is xx, Set is x, Tag is xxxx, Addr is xxxxxx, Dirty is now: x
-[0][L1D] State was  x, lsu_valid_in=x, lsu_valid_in_reg=x, lsu_ready_out_comb=0, next_state= 0
 [5000][CACHE] State is  0, Offset is 00, Set is 0, Tag is 0000, Addr is 000000, Dirty is now: 0
-[5000][L1D] State was  0, lsu_valid_in=0, lsu_valid_in_reg=0, lsu_ready_out_comb=1, next_state= 0
 [55000][CACHE] State is  0, Offset is xx, Set is x, Tag is xxxx, Addr is xxxxxx, Dirty is now: x
 [65000][CACHE] State is  7, Offset is xx, Set is x, Tag is xxxx, Addr is xxxxxx, Dirty is now: x
 [75000][CACHE] State is  0, Offset is xx, Set is x, Tag is xxxx, Addr is xxxxxx, Dirty is now: x
-UVM_INFO uvm/lsu_monitor.sv(62) @ 95000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=0 addr=0x4a770 val=0xc2e503b615956958 delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 115000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=1 addr=0x3caf28 val=0x277398a7898fc9ff delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 165000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=2 addr=0x3f30b0 val=0x8261303aa69a0f1d delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 185000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=3 addr=0xb2ca0 val=0x1c40c7441070f30f delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 205000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=4 addr=0x376170 val=0x8c71fc0bf3434c6a delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 235000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=5 addr=0x25f068 val=0xddb64a3583af5f53 delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 265000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=6 addr=0x349c88 val=0x50ea242c30cea3d delay=0
-UVM_INFO uvm/lsu_monitor.sv(62) @ 305000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=7 addr=0xbd658 val=0xdd86ba19175e122e delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 105000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=0 addr=0x208df0 val=0xe114f2f0c8411dd5 delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 125000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=1 addr=0x295558 val=0x17298195e55bede7 delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 145000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=2 addr=0x2ad8a0 val=0x38de594efbffe4e3 delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 175000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=3 addr=0x3219c0 val=0xe7ded5dc369731eb delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 215000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=4 addr=0xfdf38 val=0xf3642cbb144d6b1b delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 235000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=5 addr=0x29e08 val=0xcec4acd90324dc3b delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 275000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=6 addr=0x58580 val=0xfe8a0ce1a72a0157 delay=0
+UVM_INFO uvm/lsu_monitor.sv(62) @ 295000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=7 addr=0x294738 val=0xbfdd3a5780a3148b delay=0
 UVM_FATAL /home/ale/Documents/ozone-processor/uvm/tb_top.sv(168) @ 1000000000: reporter [TIMEOUT] Simulation exceeded 1msÿÿÿ” likely deadlock
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(13673) @ 1000000000: reporter [UVM/REPORT/SERVER] 
 --- UVM Report Summary ---
@@ -111,4 +109,4 @@ UVM_FATAL :    1
 
 $finish called at time : 1 ms : File "/tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv" Line 18538
 exit
-INFO: [Common 17-206] Exiting xsim at Wed Apr  1 16:39:19 2026...
+INFO: [Common 17-206] Exiting xsim at Wed Apr  1 19:45:05 2026...

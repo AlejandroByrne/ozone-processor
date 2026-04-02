@@ -1,2 +1,3 @@
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/test_dpi.sv" into library work
-INFO: [VRFC 10-311] analyzing module test_dpi
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/lsu_l1d_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/tb_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module tb_top

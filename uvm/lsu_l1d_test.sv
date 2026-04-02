@@ -38,6 +38,31 @@ endclass
 
 
 // ═══════════════════════════════════════════════════════════════
+//  Smoke test — just the DEADBEEF sequence
+// ═══════════════════════════════════════════════════════════════
+class lsu_smoke_test extends lsu_base_test;
+  `uvm_component_utils(lsu_smoke_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name, parent);
+  endfunction
+
+  task run_phase(uvm_phase phase);
+    lsu_smoke_seq seq;
+    phase.raise_objection(this);
+
+    `uvm_info("TEST", "Starting DEADBEEF Smoke Test", UVM_LOW)
+    seq = lsu_smoke_seq::type_id::create("seq");
+    seq.start(env.agent.sqr);
+    
+    // Drain time — wait for logic to finish
+    #5000;
+
+    phase.drop_objection(this);
+  endtask
+endclass
+
+// ═══════════════════════════════════════════════════════════════
 //  Load-only test
 // ═══════════════════════════════════════════════════════════════
 class lsu_load_test extends lsu_base_test;
