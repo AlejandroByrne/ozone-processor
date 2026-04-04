@@ -3,26 +3,26 @@
 # SW Build 6140274 on Wed May 21 22:58:25 MDT 2025
 # IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
 # SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
-# Start of session at: Wed Apr  1 22:39:27 2026
-# Process ID         : 38769
+# Start of session at: Sat Apr  4 12:22:45 2026
+# Process ID         : 149929
 # Current directory  : /home/ale/Documents/ozone-processor
-# Command line       : xsim -mode tcl -source {xsim.dir/top_sim/xsim_script.tcl}
+# Command line       : xsim -mode tcl -source {xsim.dir/l1d_sim/xsim_script.tcl}
 # Log file           : /home/ale/Documents/ozone-processor/xsim.log
 # Journal file       : /home/ale/Documents/ozone-processor/xsim.jou
 # Running On         : vivado
 # Platform           : Ubuntu
 # Operating System   : Ubuntu 24.04.2 LTS
 # Processor Detail   : Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz
-# CPU Frequency      : 4099.490 MHz
+# CPU Frequency      : 4017.040 MHz
 # CPU Physical cores : 4
 # CPU Logical cores  : 8
 # Host memory        : 16646 MB
 # Swap memory        : 4294 MB
 # Total Virtual      : 20941 MB
-# Available Virtual  : 17162 MB
+# Available Virtual  : 11209 MB
 #-----------------------------------------------------------
-source xsim.dir/top_sim/xsim_script.tcl
-# xsim {top_sim} -testplusarg UVM_TESTNAME=lsu_raw_test -autoloadwcfg -runall
+source xsim.dir/l1d_sim/xsim_script.tcl
+# xsim {l1d_sim} -testplusarg UVM_TESTNAME=l1d_cold_load_test -testplusarg UVM_VERBOSITY=UVM_HIGH -autoloadwcfg -runall
 Time resolution is 1 ps
 run -all
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(18601) @ 0: reporter [UVM/RELNOTES] 
@@ -46,71 +46,147 @@ UVM-1.2
       (Specify +UVM_NO_RELNOTES to turn off this notice)
 
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(18648) @ 0: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
-UVM_INFO @ 0: reporter [RNTST] Running test lsu_raw_test...
-UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(18752) @ 0: reporter [UVMTOP] UVM testbench topology:
---------------------------------------------------------------
-Name                       Type                    Size  Value
---------------------------------------------------------------
-uvm_test_top               lsu_raw_test            -     @346 
-  env                      lsu_l1d_env             -     @359 
-    agent                  lsu_agent               -     @368 
-      drv                  lsu_driver              -     @424 
-        rsp_port           uvm_analysis_port       -     @443 
-        seq_item_port      uvm_seq_item_pull_port  -     @433 
-      mon                  lsu_monitor             -     @415 
-        comp_ap            uvm_analysis_port       -     @601 
-        req_ap             uvm_analysis_port       -     @591 
-      sqr                  uvm_sequencer           -     @453 
-        rsp_export         uvm_analysis_export     -     @462 
-        seq_item_export    uvm_seq_item_pull_imp   -     @580 
-        arbitration_queue  array                   0     -    
-        lock_queue         array                   0     -    
-        num_last_reqs      integral                32    'd1  
-        num_last_rsps      integral                32    'd1  
-    cov                    lsu_coverage            -     @395 
-      analysis_imp         uvm_analysis_imp        -     @404 
-    llc                    llc_responder           -     @377 
-    scb                    lsu_scoreboard          -     @386 
-      comp_export          uvm_analysis_imp_comp   -     @628 
-      req_export           uvm_analysis_imp_req    -     @618 
---------------------------------------------------------------
-
+UVM_INFO @ 0: reporter [RNTST] Running test l1d_cold_load_test...
 UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(20867) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
-UVM_INFO uvm/lsu_monitor.sv(63) @ 95000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=0 addr=0x138990 val=0xc76b2c089f7f6c6d delay=0
-UVM_INFO uvm/lsu_monitor.sv(63) @ 135000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=1 addr=0x138990 val=0x9d3d975cc3cbfaf2 delay=0
-UVM_INFO uvm/lsu_monitor.sv(63) @ 155000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=2 addr=0x3a9008 val=0xd3f93930b57c72c0 delay=0
-UVM_INFO uvm/lsu_scoreboard.sv(105) @ 165000: uvm_test_top.env.scb [SCB] MATCH tag=1 addr=0x138990 value=0xc76b2c089f7f6c6d
-UVM_INFO uvm/lsu_monitor.sv(82) @ 165000: uvm_test_top.env.agent.mon [MON] COMPLETION: tag=1 value=0xc76b2c089f7f6c6d
-UVM_INFO uvm/lsu_monitor.sv(63) @ 195000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=3 addr=0x3a9008 val=0x379fe446f859ba97 delay=0
-UVM_INFO uvm/lsu_monitor.sv(63) @ 215000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=4 addr=0x1e6880 val=0xc8f437c002419768 delay=0
-UVM_INFO uvm/lsu_scoreboard.sv(105) @ 225000: uvm_test_top.env.scb [SCB] MATCH tag=3 addr=0x3a9008 value=0xd3f93930b57c72c0
-UVM_INFO uvm/lsu_monitor.sv(82) @ 225000: uvm_test_top.env.agent.mon [MON] COMPLETION: tag=3 value=0xd3f93930b57c72c0
-UVM_INFO uvm/lsu_monitor.sv(63) @ 255000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=5 addr=0x1e6880 val=0xe4543d9d2a0a8882 delay=0
-UVM_INFO uvm/lsu_scoreboard.sv(105) @ 285000: uvm_test_top.env.scb [SCB] MATCH tag=5 addr=0x1e6880 value=0xc8f437c002419768
-UVM_INFO uvm/lsu_monitor.sv(82) @ 285000: uvm_test_top.env.agent.mon [MON] COMPLETION: tag=5 value=0xc8f437c002419768
-UVM_INFO uvm/lsu_monitor.sv(63) @ 295000: uvm_test_top.env.agent.mon [MON] REQ complete: STORE tag=6 addr=0x14eab0 val=0xd13ae044ff9a1ec5 delay=0
-UVM_INFO uvm/lsu_monitor.sv(63) @ 315000: uvm_test_top.env.agent.mon [MON] REQ complete:  LOAD tag=7 addr=0x14eab0 val=0x2818f73df62665ad delay=0
-UVM_INFO uvm/lsu_scoreboard.sv(105) @ 345000: uvm_test_top.env.scb [SCB] MATCH tag=7 addr=0x14eab0 value=0xd13ae044ff9a1ec5
-UVM_INFO uvm/lsu_monitor.sv(82) @ 345000: uvm_test_top.env.agent.mon [MON] COMPLETION: tag=7 value=0xd13ae044ff9a1ec5
-UVM_FATAL /home/ale/Documents/ozone-processor/uvm/tb_top.sv(168) @ 1000000000: reporter [TIMEOUT] Simulation exceeded 1msÿÿÿ” likely deadlock
-UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(13673) @ 1000000000: reporter [UVM/REPORT/SERVER] 
+UVM_INFO uvm/l1d_test.sv(35) @ 0: uvm_test_top [TEST] Starting Cold Load Test
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_monitor.sv(46) @ 35000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=0 addr=0x1000 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 35000: uvm_test_top.env.scb [SCB] REQ: LD tag=0 addr=0x1000 ->    MISS
+UVM_INFO uvm/l1d_driver.sv(49) @ 35000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=0 addr=0x1000 val=0xff915f59eaf4d3a3
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[55000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[65000][CORE_CACHE] State: 1 -> 2
+miss detected on write
+primary miss!
+req accepted to lc
+[105000][CORE_CACHE] State: 2 -> 0
+UVM_INFO uvm/llc_responder.sv(96) @ 115000: uvm_test_top.env.llc [LLC] Miss request: addr=0x1000, responding in 5 cycles
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_driver.sv(49) @ 125000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=1 addr=0x1008 val=0xb36e2cb639387eab
+UVM_INFO uvm/l1d_monitor.sv(46) @ 125000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=1 addr=0x1008 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 125000: uvm_test_top.env.scb [SCB] REQ: LD tag=1 addr=0x1008 ->    MISS
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[145000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[155000][CORE_CACHE] State: 1 -> 2
+miss detected on write
+secondary miss!
+[195000][CORE_CACHE] State: 2 -> 0
+WRITING FROM LC
+UVM_INFO uvm/l1d_monitor.sv(80) @ 215000: uvm_test_top.env.agent.mon [MON] FILL: addr=0x1000
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 215000: uvm_test_top.env.scb [SCB] EXPECT: tag=0 data=0x1000 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 215000: uvm_test_top.env.scb [SCB] EXPECT: tag=1 data=0x1008 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(143) @ 215000: uvm_test_top.env.scb [SCB] FILL: addr=0x1000 -> 2 completions
+UVM_INFO uvm/llc_responder.sv(110) @ 215000: uvm_test_top.env.llc [LLC] Miss response accepted: addr=0x1000
+UVM_INFO uvm/l1d_monitor.sv(63) @ 235000: uvm_test_top.env.agent.mon [MON] COMP: tag=0 val=0x1000 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 235000: uvm_test_top.env.scb [SCB] LOAD OK: tag=0 data=0x1000
+UVM_INFO uvm/l1d_monitor.sv(63) @ 245000: uvm_test_top.env.agent.mon [MON] COMP: tag=1 val=0x1008 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 245000: uvm_test_top.env.scb [SCB] LOAD OK: tag=1 data=0x1008
+ATTEMPTING TO READ CACHE DATA
+[265000][CORE_CACHE] State: 0 -> 1
+UVM_INFO uvm/l1d_monitor.sv(46) @ 265000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=2 addr=0x1010 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 265000: uvm_test_top.env.scb [SCB] EXPECT: tag=2 data=0x1010 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 265000: uvm_test_top.env.scb [SCB] REQ: LD tag=2 addr=0x1010 -> HIT/FWD
+UVM_INFO uvm/l1d_driver.sv(49) @ 265000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=2 addr=0x1010 val=0xf45d58a8d3a3ebfb
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[275000][CORE_CACHE] State: 1 -> 3
+[285000][CORE_CACHE] State: 3 -> 0
+[305000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[315000][CORE_CACHE] State: 1 -> 6
+[355000][CORE_CACHE] State: 6 -> 0
+UVM_INFO uvm/l1d_monitor.sv(63) @ 355000: uvm_test_top.env.agent.mon [MON] COMP: tag=2 val=0x1010 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 355000: uvm_test_top.env.scb [SCB] LOAD OK: tag=2 data=0x1010
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_monitor.sv(46) @ 365000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=3 addr=0x1018 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 365000: uvm_test_top.env.scb [SCB] EXPECT: tag=3 data=0x1018 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 365000: uvm_test_top.env.scb [SCB] REQ: LD tag=3 addr=0x1018 -> HIT/FWD
+UVM_INFO uvm/l1d_driver.sv(49) @ 365000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=3 addr=0x1018 val=0xcd1e523286316375
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[385000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[395000][CORE_CACHE] State: 1 -> 6
+[435000][CORE_CACHE] State: 6 -> 0
+UVM_INFO uvm/l1d_monitor.sv(63) @ 435000: uvm_test_top.env.agent.mon [MON] COMP: tag=3 val=0x1018 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 435000: uvm_test_top.env.scb [SCB] LOAD OK: tag=3 data=0x1018
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_monitor.sv(46) @ 445000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=4 addr=0x1020 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 445000: uvm_test_top.env.scb [SCB] EXPECT: tag=4 data=0x1020 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 445000: uvm_test_top.env.scb [SCB] REQ: LD tag=4 addr=0x1020 -> HIT/FWD
+UVM_INFO uvm/l1d_driver.sv(49) @ 445000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=4 addr=0x1020 val=0x96d1b3f2eadca485
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[465000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[475000][CORE_CACHE] State: 1 -> 6
+[515000][CORE_CACHE] State: 6 -> 0
+UVM_INFO uvm/l1d_monitor.sv(63) @ 515000: uvm_test_top.env.agent.mon [MON] COMP: tag=4 val=0x1020 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 515000: uvm_test_top.env.scb [SCB] LOAD OK: tag=4 data=0x1020
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_monitor.sv(46) @ 525000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=5 addr=0x1028 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 525000: uvm_test_top.env.scb [SCB] EXPECT: tag=5 data=0x1028 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 525000: uvm_test_top.env.scb [SCB] REQ: LD tag=5 addr=0x1028 -> HIT/FWD
+UVM_INFO uvm/l1d_driver.sv(49) @ 525000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=5 addr=0x1028 val=0x3878ead5cfbd5709
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[545000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[555000][CORE_CACHE] State: 1 -> 6
+[595000][CORE_CACHE] State: 6 -> 0
+UVM_INFO uvm/l1d_monitor.sv(63) @ 595000: uvm_test_top.env.agent.mon [MON] COMP: tag=5 val=0x1028 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 595000: uvm_test_top.env.scb [SCB] LOAD OK: tag=5 data=0x1028
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_monitor.sv(46) @ 605000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=6 addr=0x1030 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 605000: uvm_test_top.env.scb [SCB] EXPECT: tag=6 data=0x1030 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 605000: uvm_test_top.env.scb [SCB] REQ: LD tag=6 addr=0x1030 -> HIT/FWD
+UVM_INFO uvm/l1d_driver.sv(49) @ 605000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=6 addr=0x1030 val=0xee4a47f4c0d51507
+ATTEMPTING TO READ CACHE DATA
+ATTEMPTING TO READ CACHE DATA
+[625000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[635000][CORE_CACHE] State: 1 -> 6
+[675000][CORE_CACHE] State: 6 -> 0
+UVM_INFO uvm/l1d_monitor.sv(63) @ 675000: uvm_test_top.env.agent.mon [MON] COMP: tag=6 val=0x1030 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 675000: uvm_test_top.env.scb [SCB] LOAD OK: tag=6 data=0x1030
+ATTEMPTING TO READ CACHE DATA
+UVM_INFO uvm/l1d_monitor.sv(46) @ 685000: uvm_test_top.env.agent.mon [MON] REQ:  LOAD tag=7 addr=0x1038 val=0x0
+UVM_INFO uvm/l1d_scoreboard.sv(58) @ 685000: uvm_test_top.env.scb [SCB] EXPECT: tag=7 data=0x1038 write=0
+UVM_INFO uvm/l1d_scoreboard.sv(123) @ 685000: uvm_test_top.env.scb [SCB] REQ: LD tag=7 addr=0x1038 -> HIT/FWD
+UVM_INFO uvm/l1d_driver.sv(49) @ 685000: uvm_test_top.env.agent.drv [DRV] Driven:  LOAD tag=7 addr=0x1038 val=0xa3555c161dfe1c12
+ATTEMPTING TO READ CACHE DATA
+[705000][CORE_CACHE] State: 0 -> 1
+ATTEMPTING TO READ CACHE DATA
+[715000][CORE_CACHE] State: 1 -> 6
+[755000][CORE_CACHE] State: 6 -> 0
+UVM_INFO uvm/l1d_monitor.sv(63) @ 755000: uvm_test_top.env.agent.mon [MON] COMP: tag=7 val=0x1038 write_comp=0
+UVM_INFO uvm/l1d_scoreboard.sv(83) @ 755000: uvm_test_top.env.scb [SCB] LOAD OK: tag=7 data=0x1038
+UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(19968) @ 5685000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+UVM_INFO uvm/l1d_scoreboard.sv(195) @ 5685000: uvm_test_top.env.scb [SCB] TEST PASSED -- 8 loads checked, 0 store completions, 0 unreceived
+UVM_INFO /tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv(13673) @ 5685000: reporter [UVM/REPORT/SERVER] 
 --- UVM Report Summary ---
 
 ** Report counts by severity
-UVM_INFO :   21
+UVM_INFO :   59
 UVM_WARNING :    0
 UVM_ERROR :    0
-UVM_FATAL :    1
+UVM_FATAL :    0
 ** Report counts by id
-[MON]    12
+[DRV]     8
+[LLC]     2
+[MON]    17
 [NO_DPI_TSTNAME]     1
 [RNTST]     1
-[SCB]     4
-[TIMEOUT]     1
+[SCB]    26
+[TEST]     1
+[TEST_DONE]     1
 [UVM/COMP/NAMECHECK]     1
 [UVM/RELNOTES]     1
-[UVMTOP]     1
 
-$finish called at time : 1 ms : File "/tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv" Line 18538
+$finish called at time : 5685 ns : File "/tools/Xilinx/2025.1/Vivado/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv" Line 18699
 exit
-INFO: [Common 17-206] Exiting xsim at Wed Apr  1 22:39:30 2026...
+INFO: [Common 17-206] Exiting xsim at Sat Apr  4 12:22:49 2026...

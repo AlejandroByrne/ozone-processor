@@ -1,3 +1,4 @@
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/lsu_l1d_pkg.sv" into library work
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/tb_top.sv" into library work
-INFO: [VRFC 10-311] analyzing module tb_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/l1d_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/lsu_l1d_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/ale/Documents/ozone-processor/uvm/tb_top_l1d.sv" into library work
+INFO: [VRFC 10-311] analyzing module tb_top_l1d

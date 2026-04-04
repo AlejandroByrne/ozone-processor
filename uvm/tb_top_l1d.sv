@@ -6,13 +6,13 @@ module tb_top_l1d;
   `include "uvm_macros.svh"
   import l1d_pkg::*;
 
-  // Parameters
-  localparam int A = 3;
-  localparam int B = 64;
-  localparam int C = 1536;
-  localparam int PADDR_BITS = 22;
-  localparam int MSHR_COUNT = 2;
-  localparam int TAG_BITS = 10;
+  // Parameters from package
+  localparam int A = l1d_pkg::A;
+  localparam int B = l1d_pkg::B;
+  localparam int C = l1d_pkg::C;
+  localparam int PADDR_BITS = l1d_pkg::PADDR_BITS;
+  localparam int MSHR_COUNT = l1d_pkg::MSHR_COUNT;
+  localparam int TAG_BITS = l1d_pkg::TAG_BITS;
 
   // Clocks and resets
   logic clk;

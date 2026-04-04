@@ -20,9 +20,11 @@ class l1d_env extends uvm_env;
 
   function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    // Connect monitor analysis ports to scoreboard
+    // LSU-side monitor → scoreboard
     agent.mon.req_ap.connect(scb.req_export);
     agent.mon.comp_ap.connect(scb.comp_export);
+    // LLC-side monitor → scoreboard
+    agent.mon.fill_ap.connect(scb.fill_export);
   endfunction
 
 endclass
